@@ -1,0 +1,6 @@
+_build/
+_preview/
+_archive/
+.claude/
+.DS_Store
+_qa.html

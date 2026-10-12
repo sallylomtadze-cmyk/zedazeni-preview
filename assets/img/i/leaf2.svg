@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 244 136">
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1F5E1B"/><stop offset=".45" stop-color="#4C9A30"/><stop offset="1" stop-color="#8FCB4B"/></linearGradient>
+<linearGradient id="sh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".0"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#0d2a08" stop-opacity=".55"/></linearGradient>
+<clipPath id="c"><path d="M14 78C40 30 104 4 168 14C198 19 220 36 232 58C210 92 168 120 112 122C66 124 30 106 14 78Z"/></clipPath>
+<filter id="b" x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation="7"/></filter>
+<filter id="b2" x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation="3"/></filter>
+</defs>
+<path d="M14 78C40 30 104 4 168 14C198 19 220 36 232 58C210 92 168 120 112 122C66 124 30 106 14 78Z" fill="url(#g)"/>
+<g clip-path="url(#c)">
+  <path d="M14 78C70 70 150 60 232 58C210 92 168 120 112 122C66 124 30 106 14 78Z" fill="url(#sh)"/>
+  <ellipse cx="118" cy="38" rx="78" ry="16" transform="rotate(-9 118 38)" fill="#F3FFC2" opacity=".42" filter="url(#b)"/>
+  <ellipse cx="170" cy="30" rx="30" ry="6" transform="rotate(8 170 30)" fill="#fff" opacity=".35" filter="url(#b2)"/>
+  <path d="M14 78C40 104 80 124 130 122" fill="none" stroke="#0d2a08" stroke-width="10" opacity=".25" filter="url(#b)"/>
+  <g fill="none" stroke="#C8EB8A" stroke-width="1.5" stroke-linecap="round" opacity=".5"><path d="M40 76C54 60 70 44 88 37"/><path d="M40 76C56 88 70 102 86 109"/><path d="M65 75C79 59 95 41 113 32"/><path d="M65 75C81 87 95 101 111 109"/><path d="M90 73C104 57 120 37 138 27"/><path d="M90 73C106 85 120 101 136 110"/><path d="M115 71C129 55 145 33 163 22"/><path d="M115 71C131 83 145 100 161 110"/><path d="M140 68C154 52 170 32 188 21"/><path d="M140 68C156 80 170 97 186 107"/><path d="M166 66C180 50 196 31 214 21"/><path d="M166 66C182 78 196 94 212 102"/><path d="M191 63C205 47 221 30 239 22"/><path d="M191 63C207 75 221 89 237 97"/></g>
+</g>
+<path d="M14 78C70 70 150 60 232 58" fill="none" stroke="#C8EB8A" stroke-width="3.2" stroke-linecap="round" opacity=".9"/>
+<path d="M14 78C70 70 150 60 232 58" fill="none" stroke="#1d4f14" stroke-width="1" stroke-linecap="round" opacity=".5" transform="translate(0 2)"/>
+<path d="M2 82C6 80 10 79 15 78" fill="none" stroke="#5d7a2a" stroke-width="5" stroke-linecap="round"/>
+<path d="M14 78C40 30 104 4 168 14C198 19 220 36 232 58" fill="none" stroke="#E9FFB0" stroke-width="1.4" opacity=".55"/>
+</svg>
