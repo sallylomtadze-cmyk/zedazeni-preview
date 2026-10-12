@@ -230,56 +230,34 @@
   }
 
   /* ---------- roadmap ---------- */
+  /* story: the crown-cap dial. Scrolling turns the cap one notch per milestone; the year, the story and the bottle change with it */
   function road() {
-    const el = $('.road'); if (!el) return;
-    const track = $('.road-track', el), ms = $$('.ms', el), svg = $('svg.curve', el), base = $('.base', el), lit = $('.lit', el), bar = $('.road-ui .bar i', el);
-    const desk = matchMedia('(min-width: 1001px)');
-    let xs = [], lens = [], L = 0, W = 0;
-    function layout() {
-      if (!desk.matches) { ms.forEach(m => { m.classList.add('on'); m.style.left = m.style.top = '' }); track.style.width = ''; return false; }
-      const H = track.clientHeight, step = 330, pad = 220, n = ms.length;
-      W = pad * 2 + (n - 1) * step; track.style.width = W + 'px';
-      const pts = ms.map((m, i) => [pad + i * step, H * (.5 + Math.sin(i * 1.05) * .13 - (i / (n - 1) - .5) * .1)]);
-      ms.forEach((m, i) => { m.style.left = pts[i][0] + 'px'; m.style.top = pts[i][1] + 'px'; m.classList.toggle('up', i % 2 === 1) });
-      const all = [[0, pts[0][1] + 30], ...pts, [W, pts[n - 1][1] - 30]];
-      let d = `M${all[0][0]},${all[0][1]}`;
-      for (let i = 0; i < all.length - 1; i++) {
-        const p0 = all[Math.max(0, i - 1)], p1 = all[i], p2 = all[i + 1], p3 = all[Math.min(all.length - 1, i + 2)];
-        d += `C${p1[0] + (p2[0] - p0[0]) / 6},${p1[1] + (p2[1] - p0[1]) / 6} ${p2[0] - (p3[0] - p1[0]) / 6},${p2[1] - (p3[1] - p1[1]) / 6} ${p2[0]},${p2[1]}`;
-      }
-      svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-      base.setAttribute('d', d); lit.setAttribute('d', d);
-      L = lit.getTotalLength(); lit.style.strokeDasharray = L; xs = pts.map(p => p[0]);
-      lens = xs.map(x => { let a = 0, b = L; for (let k = 0; k < 22; k++) { const mid = (a + b) / 2; lit.getPointAtLength(mid).x < x ? a = mid : b = mid } return a });
-      return true;
+    const el = $('.cap'); if (!el) return;
+    const items = $$('.cap-list li', el).map(li => ({ y: +li.dataset.y, img: li.dataset.img, h: $('h3', li).textContent, p: $('p', li).textContent }));
+    const n = items.length, wheel = $('.cap-wheel svg', el), labels = $$('.cap-wheel text', el), ticks = $$('.cap-wheel .tk', el);
+    const yEl = $('.cap-y b', el), hEl = $('.cap-h', el), pEl = $('.cap-p', el), cnt = $('.cap-ctl .cnt b', el), bt = $('.cap-b', el);
+    let cur = -1;
+    function show(k, instant) {
+      if (k === cur) return; cur = k; const it = items[k], rot = -k * 360 / n;
+      labels.forEach((t, i) => t.classList.toggle('on', i === k)); ticks.forEach((t, i) => t.classList.toggle('on', i <= k));
+      cnt.textContent = String(k + 1).padStart(2, '0'); hEl.textContent = it.h; pEl.textContent = it.p; el.classList.toggle('hot', it.y >= 2025);
+      bt.innerHTML = it.img ? `<img src="${it.img}" alt="">` : `<img class="lg" src="${(window.ROOT || '')}assets/img/logo-light.svg" alt="">`;
+      if (anim && !instant) {
+        gsap.to(wheel, { rotation: rot, duration: 1.1, ease: E, transformOrigin: '50% 50%', overwrite: true });
+        const o = { v: +yEl.textContent }; gsap.to(o, { v: it.y, duration: .6, ease: 'power2.out', snap: { v: 1 }, onUpdate: () => { yEl.textContent = o.v } });
+        gsap.fromTo([hEl, pEl], { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .6, ease: E, stagger: .06, overwrite: true });
+        gsap.fromTo(bt.firstChild, { yPercent: 10, opacity: 0, rotate: -7, scale: .94 }, { yPercent: 0, opacity: 1, rotate: 0, scale: 1, duration: .9, ease: E, transformOrigin: '50% 100%' });
+      } else { wheel.style.transform = `rotate(${rot}deg)`; yEl.textContent = it.y; }
     }
-    function head(x) {
-      if (x <= xs[0]) return lens[0] * x / xs[0];
-      for (let i = 0; i < xs.length - 1; i++) if (x <= xs[i + 1]) return lens[i] + (lens[i + 1] - lens[i]) * (x - xs[i]) / (xs[i + 1] - xs[i]);
-      return L;
-    }
-    function paint(shift) {
-      const pr = Math.min(1, shift / Math.max(1, W - innerWidth));
-      const hx = Math.min(W, shift + innerWidth * (.5 + .5 * pr));
-      lit.style.strokeDashoffset = L - head(hx);
-      ms.forEach((m, i) => m.classList.toggle('on', xs[i] <= hx + 2));
-      if (bar) bar.style.transform = `scaleX(${pr})`;
-    }
-    if (!layout() || !anim) {
-      if (desk.matches) { el.style.overflowX = 'auto'; lit.style.strokeDashoffset = 0; ms.forEach(m => m.classList.add('on')) }
-      return;
-    }
-    const dist = () => Math.max(0, W - innerWidth);
-    paint(0);
-    const mm = gsap.matchMedia();
-    mm.add('(min-width: 1001px)', () => {
-      const tw = gsap.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: el, start: 'top top', end: () => '+=' + dist(), pin: true, scrub: .5, invalidateOnRefresh: true, anticipatePin: 1, onRefresh() { layout() }, onUpdate(s) { paint(s.progress * dist()) } } });
-      return () => { gsap.set(track, { clearProps: 'transform' }) };
-    });
-    desk.addEventListener('change', () => { layout(); ScrollTrigger.refresh() });
+    show(0, true);
+    const step = d => show(Math.max(0, Math.min(n - 1, cur + d)));
+    if (!anim) { root.classList.add('cap-static'); $('.cap-prev', el).onclick = () => step(-1); $('.cap-next', el).onclick = () => step(1); return; }
+    const st = ScrollTrigger.create({ trigger: el, start: 'top top', end: () => '+=' + (n - 1) * Math.round(innerHeight * .42), pin: true, scrub: true,
+      snap: { snapTo: 1 / (n - 1), duration: { min: .15, max: .45 }, delay: .06, ease: 'power1.inOut' }, onUpdate: s => show(Math.round(s.progress * (n - 1))) });
+    const go = d => { const k = Math.max(0, Math.min(n - 1, cur + d)); window.scrollTo({ top: st.start + (st.end - st.start) * k / (n - 1), behavior: 'smooth' }) };
+    $('.cap-prev', el).onclick = () => go(-1); $('.cap-next', el).onclick = () => go(1);
   }
 
-  /* ---------- maps ---------- */
   function maps() {
     $$('.mapbox').forEach(box => {
       const svg = $('svg.map', box), card = $('.mcard', box), dots = $$('.dot', box), rows = $$('.rg[data-k]', box.closest('.sec') || document);
@@ -289,7 +267,7 @@
         rows.forEach(r => r.classList.toggle('on', r.dataset.k === d.dataset.k));
         if (!card) return;
         $('h4', card).textContent = d.dataset.t; $('p', card).textContent = d.dataset.p || ''; $('small', card).textContent = d.dataset.s || '';
-        const im = $('img', card); if (d.dataset.img) { im.src = d.dataset.img; im.style.display = '' } else im.style.display = 'none';
+        const fl = $('.flag', card); if (fl) { fl.hidden = !d.dataset.f; if (d.dataset.f) $('img', fl).src = d.dataset.f } const im = $(':scope > img', card); if (d.dataset.img) { im.src = d.dataset.img; im.style.display = '' } else im.style.display = 'none';
         card.classList.toggle('noimg', !d.dataset.img);
         const b = box.getBoundingClientRect(), c = d.getBoundingClientRect();
         let x = c.left - b.left + c.width / 2 + 22, y = c.top - b.top - 40;
@@ -324,9 +302,9 @@
         body.style.clipPath = 'polygon(' + poly + '100% 100%,0 100%)'; line.setAttribute('d', d); glow.setAttribute('d', d);
       };
       // "15 წელი": the number counts up 1 -> 15 in place (fixed cells, the tens cell stays empty below 10)
-      if (anim) { const yrs = $$('.yr', host), set = n => yrs.forEach(y => { const c = y.children; c[0].textContent = n > 9 ? String(n)[0] : ''; c[1].textContent = String(n % 10) }), o = { v: 1 };
-        set(1); gsap.to(yrs, { opacity: 1, duration: .7 }); gsap.to(o, { v: 15, duration: 2.4, delay: .4, ease: 'power2.out', snap: { v: 1 }, onUpdate: () => set(o.v) }); }
-      else $$('.yr', host).forEach(y => { y.style.opacity = 1 });
+      if (anim) { const yrs = $$('.bigyr', host), set = n => yrs.forEach(y => { const c = y.children; c[0].textContent = n > 9 ? String(n)[0] : ''; c[1].textContent = String(n % 10) }), o = { v: 1 };
+        set(1); ScrollTrigger.create({ trigger: host, start: 'top 65%', once: true, onEnter: () => { gsap.to(yrs, { opacity: 1, duration: .7 }); gsap.to(o, { v: 15, duration: 2.4, delay: .2, ease: 'power2.out', snap: { v: 1 }, onUpdate: () => set(o.v) }) } }); }
+      else $$('.bigyr', host).forEach(y => { y.style.opacity = 1 });
       size(); addEventListener('resize', () => { size(); if (!anim) draw(0) });
       if (!anim) draw(0);
       else {
@@ -335,16 +313,28 @@
         new IntersectionObserver(e => { on = e[0].isIntersecting }).observe(host);
         host.addEventListener('pointermove', e => { const r = pour.getBoundingClientRect(); if (Math.abs(e.clientY - (r.top + PAD)) < 90) { px = e.clientX - r.left; energy = Math.min(1, energy + .25) } });
         const h0 = matchMedia('(max-width:700px)').matches ? '38%' : '41%';   // explicit start: the CSS pour-in is still running when this is set up
-        gsap.fromTo(pour, { height: h0 }, { height: '82%', ease: 'none', scrollTrigger: { trigger: '.sth', start: 'top top', end: 'bottom top', scrub: .6 } });
+        gsap.fromTo(pour, { height: h0 }, { height: '82%', ease: 'none', scrollTrigger: { trigger: '.sth', start: 'top 70%', end: 'bottom bottom', scrub: .6 } });
       }
     } }
 
-  /* story: the marker climbs the golden line while the depth counts down and the steps light up */
-  { const src = $('.src');
-    if (src) { const fig = $('.src-fig', src), num = $('.src-depth b', src), steps = $$('.src-steps li', src), A = 85.2, B = 0.9;
-      const set = p => { fig.style.setProperty('--t', (A + (B - A) * p).toFixed(2) + '%'); num.textContent = Math.round(150 * (1 - p)); const k = Math.min(2, Math.floor(p * 3)); steps.forEach((li, i) => li.classList.toggle('on', i <= k)) };
-      if (anim && matchMedia('(min-width:901px)').matches) ScrollTrigger.create({ trigger: src, start: 'top top', end: 'bottom bottom', scrub: true, onUpdate: t => set(t.progress) });
-      else { if (!anim) root.classList.add('no-pin'); set(1) } } }
+  /* news journey: the line fills with the scroll, each stop lights up, visuals drift (parallax) and arrive with a turn */
+  { const nj = $('#newsbox.nj-wrap');
+    if (nj) { const line = $('.nj-line', nj), items = $$('.nj-it', nj);
+      if (anim) {
+        ScrollTrigger.create({ trigger: nj, start: 'top 60%', end: 'bottom 60%', scrub: .4, onUpdate: t => line.style.setProperty('--p', t.progress.toFixed(4)) });
+        items.forEach((it, k) => { const dir = it.classList.contains('alt') ? 1 : -1, b = $('.nj-bt', it), ph = $('.nj-ph', it), y = $('.nj-y', it);
+          ScrollTrigger.create({ trigger: it, start: 'top 58%', end: 'bottom 58%', toggleClass: { targets: it, className: 'on' } });
+          if (b) gsap.from(b, { yPercent: 14, rotate: dir * 9, opacity: 0, duration: 1.3, ease: E, transformOrigin: '50% 100%', scrollTrigger: { trigger: it, start: 'top 72%', once: true } });
+          if (ph) { gsap.from(ph, { y: 60, opacity: 0, scale: .92, duration: 1.2, ease: E, scrollTrigger: { trigger: it, start: 'top 76%', once: true } });
+            gsap.fromTo($('img', ph), { yPercent: -5 }, { yPercent: 5, ease: 'none', scrollTrigger: { trigger: it, start: 'top bottom', end: 'bottom top', scrub: true } }); }
+          gsap.fromTo(y, { yPercent: 22 }, { yPercent: -22, ease: 'none', scrollTrigger: { trigger: it, start: 'top bottom', end: 'bottom top', scrub: true } }); });
+      } else { line.style.setProperty('--p', 1); items.forEach(it => it.classList.add('on')) } } }
+
+  /* story: "150 მ" is a vessel. Scrolling raises glowing water inside the numerals and lights the three steps */
+  { const src = $('.src2');
+    if (src) { const steps = $$('.src-steps li', src);
+      const set = p => { src.style.setProperty('--p', p.toFixed(4)); const k = Math.min(2, Math.floor(p * 3)); steps.forEach((li, i) => li.classList.toggle('on', i <= k)) };
+      if (anim) ScrollTrigger.create({ trigger: src, start: 'top 72%', end: 'bottom 62%', scrub: .5, onUpdate: t => set(t.progress) }); else set(1) } }
 
   /* buttons: wrap the label so it can roll on hover */
   $$('.btn').forEach(b => { const t = b.textContent.trim(); if (!t || b.querySelector('.bt')) return; const s = document.createElement('span'); s.className = 'bt'; s.dataset.t = t; const i = document.createElement('b'); i.textContent = t; s.appendChild(i); b.textContent = ''; b.appendChild(s); });
@@ -376,6 +366,7 @@
       const intro = $$('.ph .in'); if (intro.length) gsap.fromTo(intro, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: E, stagger: .1, delay: .1 });
       ScrollTrigger.sort(); ScrollTrigger.refresh();   // triggers made before the roadmap pin (story scenes) must be measured after it
     }
+    if (SHOT && Q.has('sy')) setTimeout(() => window.scrollTo({ top: +Q.get('sy'), behavior: 'instant' }), 300);
     if (SHOT) { const id = Q.get('shot'); const t = id && document.getElementById(id); if (t) setTimeout(() => window.scrollTo({ top: t.getBoundingClientRect().top + scrollY + (+Q.get('dy') || 0), behavior: 'instant' }), 50); if (Q.has('menu') && menu) menu.classList.add('open'); }
   }
   window.__ok = 1;
