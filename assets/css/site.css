@@ -1538,3 +1538,8 @@ html,body{overflow-x:clip;max-width:100%}
   .cats::-webkit-scrollbar{display:none}
   .cat{flex:0 0 86%;scroll-snap-align:start}
 }
+/* iOS: the news bottle keeps its coloured glow as a plain gradient instead of a filter */
+@supports (-webkit-touch-callout:none){
+  .nj-bt::before{content:"";position:absolute;inset:-10% -45%;z-index:-1;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 30%,transparent),transparent 72%);pointer-events:none}
+}
+@media(max-width:700px){.st-title{font-size:clamp(44px,13.5vw,58px)}}
