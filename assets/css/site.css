@@ -1513,3 +1513,28 @@ html[lang="ru"] .bigyr span{width:.44em}
 /* phones: the page never pans sideways */
 html,body{overflow-x:clip;max-width:100%}
 .menu{overflow-x:hidden;overscroll-behavior:contain}
+
+/* iOS WebKit clips drop-shadow to the image box, which shows as a rectangle behind every bottle: no filter shadows there */
+@supports (-webkit-touch-callout:none){
+  .s-bottle img,.cat .btls img,.mcard img,.st-b img,.pc-img img,.ms img,.nimg .btl,.fz img,.flv .pill img,.gb img:not(.refl),.nj-bt img,.cap-b img,.cap-b img.lg,.cap-wheel,.glow-b img{filter:none!important}
+  .gb img:not(.refl){animation:none!important}
+}
+
+/* phones, home hero: one screen. Text on top, the bottle standing on the rock ridge, the button in the thumb zone */
+@media(max-width:700px){
+  .glow.first{min-height:max(100svh,600px);align-items:flex-start;padding-top:calc(var(--hdh) + 14px)}
+  .glow.first .glow-bg{top:auto;bottom:0;height:76%}
+  .glow.first::before{background:linear-gradient(#0A0A0C 26%,rgba(10,10,12,0) 56%)}
+  .glow.first .glow-t{position:static}
+  .glow.first .glow-t>*{position:relative;z-index:3}
+  .glow.first .glow-t h1{font-size:clamp(34px,10.4vw,46px)}
+  .glow.first .glow-t .lead{font-size:15px;line-height:1.5;margin-top:14px!important;max-width:30ch}
+  .glow.first .glow-t .btn{position:absolute;left:var(--gut);bottom:calc(20px + env(safe-area-inset-bottom));margin:0!important;opacity:1!important;transform:none!important;visibility:visible!important}
+  .glow.first .glow-b{height:31svh;bottom:21%}
+}
+/* phones: the two category cards swipe sideways */
+@media(max-width:860px){
+  .cats{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin-inline:calc(var(--gut) * -1);padding-inline:var(--gut);scroll-padding-inline:var(--gut);scrollbar-width:none;overscroll-behavior-x:contain}
+  .cats::-webkit-scrollbar{display:none}
+  .cat{flex:0 0 86%;scroll-snap-align:start}
+}

@@ -1,6 +1,6 @@
 /* ზედაზენი — პროდუქტების მონაცემები. წყარო: zedazeni.ge (2026-10). */
 const ROOT = window.ROOT || '', T = window.TR || (s => s);   // set on translated pages (en/, ru/)
-const P = n => ROOT + 'assets/img/p/' + n + '.png?v=6';
+const P = n => ROOT + 'assets/img/p/' + n + '.png?v=7';
 // flavour art: illustrated fruit sprites in assets/img/f (cut from generated sheets)
 const ICMAP = { saperavi: 'grapes', feijoa: 'feijoa-half', 'g-feijoa': 'feijoa-half', 'g-peach': 'peach', 'd-peach': 'peach', 'g-raspberry': 'raspberry', 'd-raspberry': 'raspberry', 'g-mint': 'mint',
   'd-aloe': 'leaf', 'd-tropical': 'pineapple', 'w-apple': 'apple', 'j-apple': 'apple', 'w-grapefruit': 'grapefruit-half', 'w-strawberry': 'strawberry', 'j-cherry': 'cherries', 'j-pomegranate': 'pomegranate', 'j-multi': 'mango' };
