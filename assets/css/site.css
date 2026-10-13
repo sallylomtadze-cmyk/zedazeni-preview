@@ -1569,3 +1569,17 @@ html,body{overflow-x:clip;max-width:100%}
 @media(max-width:1000px){.st-b .b3>img.refl{display:none}}
 @media(prefers-reduced-motion:reduce){.b3{animation:none}}
 .shot .b3{animation:none}
+
+/* rim lights that follow the whole silhouette: the bottle shape minus the same shape shifted a few pixels */
+.b3t u,.b3t s{position:absolute;inset:0;pointer-events:none;text-decoration:none;mix-blend-mode:screen;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-composite:source-out;mask-composite:subtract}
+.b3t u{-webkit-mask-position:0 0,3px 0;mask-position:0 0,3px 0;background:linear-gradient(rgba(255,255,255,.72),rgba(255,255,255,.34) 55%,rgba(255,255,255,0) 97%)}
+.b3t s{-webkit-mask-position:0 0,-3px 0;mask-position:0 0,-3px 0;opacity:.85;background:linear-gradient(color-mix(in srgb,var(--c,#CA9E67) 50%,#fff),color-mix(in srgb,var(--c,#CA9E67) 75%,transparent) 60%,rgba(255,255,255,0) 97%)}
+/* catalog cards: the same volume, without the sway */
+.b3.sm{animation:none;perspective:none;--hx:31%}
+.pc-img .b3t>img{height:100%;width:auto;max-width:none;max-height:none;display:block;filter:none;transition:none}
+.b3.sm .b3t u{-webkit-mask-position:0 0,2px 0;mask-position:0 0,2px 0}
+.b3.sm .b3t s{-webkit-mask-position:0 0,-2px 0;mask-position:0 0,-2px 0}
+.b3.sm::after{bottom:-3%;height:8%;width:150%}
+.pc-img .b3{transition:transform .7s var(--e)}
+.pc:hover .pc-img .b3{transform:translateY(-6px) scale(1.04)}
+.pc:hover .pc-img .b3 img{transform:none}

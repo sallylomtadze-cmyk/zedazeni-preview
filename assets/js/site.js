@@ -116,9 +116,12 @@
     const grid = $('#grid'), fl = $('#filters'), count = $('#count');
     const catName = k => (cats.find(c => c[0] === k) || [])[1] || '';
     const first = p => isBeer ? p : p.v[0];
+    // a bottle with volume: the photo plus shading, a specular line and two rim lights, all masked to its own silhouette
+    const M = u => `-webkit-mask-image:url(${u});mask-image:url(${u})`, M2 = u => `-webkit-mask-image:url(${u}),url(${u});mask-image:url(${u}),url(${u})`;
+    const vol = (u, alt, small) => `<span class="b3${small ? ' sm' : ''}">${small ? '' : `<img class="refl" src="${u}" alt="">`}<span class="b3t"><img src="${u}" alt="${esc(alt)}"><b style="${M(u)}"></b><i style="${M(u)}"></i><u style="${M2(u)}"></u><s style="${M2(u)}"></s></span></span>`;
     const visual = (p, v) => {
       const img = isBeer ? p.img : v.img;
-      return img ? `<img src="${img}" alt="${esc(p.n)}">` : p.logo ? `<img class="lg" src="${p.logo}" alt="${esc(p.n)}">` : `<span class="wm">${esc(p.n)}</span>`;
+      return img ? vol(img, p.n, true) : p.logo ? `<img class="lg" src="${p.logo}" alt="${esc(p.n)}">` : `<span class="wm">${esc(p.n)}</span>`;
     };
     /* --- soft drinks: fruit and leaves around the bottle, rebuilt for every flavour --- */
     const fxBox = $('.fx', st), fxLayer = $('.fxl', st);
@@ -188,9 +191,8 @@
       el.r.innerHTML = h;
       $$('.flv .pill', el.r).forEach(b => b.addEventListener('click', () => { vi = +b.dataset.v; stage(true) }));
       el.cnt.innerHTML = `<b>${String(cur + 1).padStart(2, '0')}</b> / ${String(items.length).padStart(2, '0')}`;
-      // stage bottle as an object in space: the photo, volume shading and a specular line masked to its own silhouette, and a faint reflection
-      const src = isBeer ? p.img : v.img, M = `-webkit-mask-image:url(${src});mask-image:url(${src})`;
-      el.b.innerHTML = src ? `<span class="b3"><img class="refl" src="${src}" alt=""><span class="b3t"><img src="${src}" alt="${esc(p.n)}"><b style="${M}"></b><i style="${M}"></i></span></span>` : visual(p, v);
+      const src = isBeer ? p.img : v.img;
+      el.b.innerHTML = src ? vol(src, p.n) : visual(p, v);
       // the bottle arrives with the fruit: neighbours are preloaded so it never lags, and a slow decode cannot hold it back
       const warm = u => { if (u && !warm.s.has(u)) { warm.s.add(u); new Image().src = u } }; warm.s = warm.s || (stage._w = stage._w || new Set());
       [items[(cur + 1) % items.length], items[(cur - 1 + items.length) % items.length], p].forEach(q => isBeer ? warm(q.img) : q.v.forEach(x => warm(x.img)));
