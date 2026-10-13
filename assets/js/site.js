@@ -159,6 +159,9 @@
     }
     if (fxLayer && anim) { let raf = 0; st.addEventListener('pointermove', e => { if (raf) return; raf = requestAnimationFrame(() => { raf = 0; const r = st.getBoundingClientRect(); fxLayer.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 2 - 1).toFixed(3)); fxLayer.style.setProperty('--my', ((e.clientY - r.top) / r.height * 2 - 1).toFixed(3)) }) }); }
 
+    // the bottle turns a few degrees toward the pointer
+    if (anim) { let rf = 0; st.addEventListener('pointermove', e => { if (rf || e.pointerType === 'touch') return; rf = requestAnimationFrame(() => { rf = 0; const r = st.getBoundingClientRect(); el.b.style.setProperty('--tx', ((e.clientX - r.left) / r.width * 2 - 1) * 7); el.b.style.setProperty('--ty', -((e.clientY - r.top) / r.height * 2 - 1) * 3) }) }); st.addEventListener('pointerleave', () => { el.b.style.setProperty('--tx', 0); el.b.style.setProperty('--ty', 0) }) }
+
     function fitTitle() {
       const t = el.title; t.style.fontSize = ''; let s = parseFloat(getComputedStyle(t).fontSize), n = 0;
       while (t.scrollWidth > t.clientWidth + 1 && s > 44 && n++ < 40) { s -= 4; t.style.fontSize = s + 'px'; }
@@ -185,14 +188,16 @@
       el.r.innerHTML = h;
       $$('.flv .pill', el.r).forEach(b => b.addEventListener('click', () => { vi = +b.dataset.v; stage(true) }));
       el.cnt.innerHTML = `<b>${String(cur + 1).padStart(2, '0')}</b> / ${String(items.length).padStart(2, '0')}`;
-      el.b.innerHTML = visual(p, v);
+      // stage bottle as an object in space: the photo, volume shading and a specular line masked to its own silhouette, and a faint reflection
+      const src = isBeer ? p.img : v.img, M = `-webkit-mask-image:url(${src});mask-image:url(${src})`;
+      el.b.innerHTML = src ? `<span class="b3"><img class="refl" src="${src}" alt=""><span class="b3t"><img src="${src}" alt="${esc(p.n)}"><b style="${M}"></b><i style="${M}"></i></span></span>` : visual(p, v);
       // the bottle arrives with the fruit: neighbours are preloaded so it never lags, and a slow decode cannot hold it back
       const warm = u => { if (u && !warm.s.has(u)) { warm.s.add(u); new Image().src = u } }; warm.s = warm.s || (stage._w = stage._w || new Set());
       [items[(cur + 1) % items.length], items[(cur - 1 + items.length) % items.length], p].forEach(q => isBeer ? warm(q.img) : q.v.forEach(x => warm(x.img)));
       const pic = el.b.firstElementChild;
       if (anim && pic) { gsap.set(pic, { opacity: 0 }); let done = false;
         const go = () => { if (done) return; done = true; gsap.fromTo(pic, { yPercent: 5, scale: .93, opacity: 0 }, { yPercent: 0, scale: 1, opacity: 1, duration: .95, ease: 'power3.out', transformOrigin: '50% 100%', delay: animate ? .08 : .25, overwrite: true }) };
-        if (pic.decode) pic.decode().then(go, go); else go(); setTimeout(go, 300); }
+        const im = $('.b3t img', el.b) || pic; if (im.decode) im.decode().then(go, go); else go(); setTimeout(go, 300); }
       $$('.pc', grid).forEach(c => c.classList.toggle('on', c.dataset.id === p.id));
       if (history.replaceState) history.replaceState(null, '', '#' + p.id);
       if (anim && animate) {

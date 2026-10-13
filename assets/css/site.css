@@ -1552,3 +1552,20 @@ html,body{overflow-x:clip;max-width:100%}
 .pc-img .wm{font-size:clamp(30px,3vw,46px)}
 @media(min-width:801px){.nums.n3{grid-template-columns:repeat(3,1fr)}}
 .st-b .wm{color:transparent;-webkit-text-stroke:1px rgba(227,192,141,.6)}
+
+/* stage bottle with volume instead of a flat cutout: cylindrical shading and a specular line masked to the glass,
+   a contact shadow, a faint floor reflection, and a slow few-degree turn (pointer on desktop, idle sway elsewhere) */
+@property --sw{syntax:"<number>";inherits:true;initial-value:0}
+@property --hx{syntax:"<percentage>";inherits:true;initial-value:30%}
+.b3{position:relative;display:block;height:100%;perspective:1000px;animation:b3sway 9s ease-in-out infinite alternate}
+@keyframes b3sway{from{--sw:-3.5;--hx:25%}to{--sw:3.5;--hx:37%}}
+.b3t{position:relative;z-index:1;display:block;height:100%;transform:rotateY(calc((var(--tx,0) + var(--sw,0)) * 1deg)) rotateX(calc(var(--ty,0) * 1deg));transform-origin:50% 62%;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.st-b .b3t>img{height:100%;width:auto;max-width:none;max-height:none;display:block;filter:none}
+.b3t b,.b3t i{position:absolute;inset:0;pointer-events:none;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.b3t b{background:linear-gradient(90deg,rgba(0,0,0,.5),rgba(0,0,0,.16) 12%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 66%,rgba(0,0,0,.18) 86%,rgba(0,0,0,.55)),linear-gradient(rgba(0,0,0,0) 60%,rgba(0,0,0,.32))}
+.b3t i{mix-blend-mode:screen;background:linear-gradient(90deg,rgba(255,255,255,0) calc(var(--hx) - 9%),rgba(255,255,255,.3) var(--hx),rgba(255,255,255,0) calc(var(--hx) + 6%)),linear-gradient(90deg,rgba(255,255,255,0) 82%,rgba(255,255,255,.13) 89%,rgba(255,255,255,0) 95%)}
+.b3::after{content:"";position:absolute;left:50%;bottom:-2.2%;width:170%;height:7%;translate:-50% 0;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.8),rgba(0,0,0,.42) 46%,rgba(0,0,0,0) 76%);z-index:0}
+.st-b .b3>img.refl{position:absolute;left:0;top:calc(100% - 1%);height:100%;width:auto;max-width:none;max-height:none;transform:scaleY(-1);opacity:.16;filter:blur(1.5px);z-index:0;-webkit-mask-image:linear-gradient(to top,#000,rgba(0,0,0,.3) 9%,rgba(0,0,0,0) 20%);mask-image:linear-gradient(to top,#000,rgba(0,0,0,.3) 9%,rgba(0,0,0,0) 20%)}
+@media(max-width:1000px){.st-b .b3>img.refl{display:none}}
+@media(prefers-reduced-motion:reduce){.b3{animation:none}}
+.shot .b3{animation:none}
