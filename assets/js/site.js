@@ -110,8 +110,7 @@
     const st = $('.stage'); if (!st) return;
     const kind = st.dataset.kind, isBeer = kind === 'beer';
     const all = isBeer ? BEERS : SOFT, cats = isBeer ? BEER_CATS : SOFT_CATS;
-    const hasPhoto = p => isBeer ? !!p.img : true;
-    const items = all.filter(hasPhoto), rest = all.filter(p => !hasPhoto(p));
+    const items = all;
     let cur = 0, vi = 0, filter = 'all';
     const el = { kick: $('.st-kick', st), title: $('.st-title', st), desc: $('.st-desc', st), b: $('.st-b', st), r: $('.st-info', st), cnt: $('.st-nav .cnt', st), glow: $('.hero-glow', st), sizes: $('.st-sizes', st) };
     const grid = $('#grid'), fl = $('#filters'), count = $('#count');
@@ -119,7 +118,7 @@
     const first = p => isBeer ? p : p.v[0];
     const visual = (p, v) => {
       const img = isBeer ? p.img : v.img;
-      return img ? `<img src="${img}" alt="${esc(p.n)}">` : '';
+      return img ? `<img src="${img}" alt="${esc(p.n)}">` : p.logo ? `<img class="lg" src="${p.logo}" alt="${esc(p.n)}">` : `<span class="wm">${esc(p.n)}</span>`;
     };
     /* --- soft drinks: fruit and leaves around the bottle, rebuilt for every flavour --- */
     const fxBox = $('.fx', st), fxLayer = $('.fxl', st);
@@ -142,7 +141,7 @@
     let fxKey = null;
     function fx(p, v, animate) {
       if (!fxBox) return;
-      const name = (v.img.match(/\/p\/([^.]+)\./) || [])[1] || '', set = FX[name] || [[], []];
+      const name = ((v.img || '').match(/\/p\/([^.]+)\./) || [])[1] || '', set = FX[name] || [[], []];
       const key = name in FX ? set[0].join() + '|' + set[1].join() : ''; if (key === fxKey) return; fxKey = key;
       const old = $$('.fz', fxBox);
       if (anim && old.length) gsap.to(old.map(o => o.firstChild), { scale: 0, opacity: 0, duration: .35, ease: 'power2.in', stagger: .012, onComplete: () => old.forEach(o => o.remove()) }); else old.forEach(o => o.remove());
@@ -216,16 +215,9 @@
     $('.st-prev', st).addEventListener('click', () => { cur = (cur - 1 + items.length) % items.length; vi = 0; stage(true) });
     $('.st-next', st).addEventListener('click', () => { cur = (cur + 1) % items.length; vi = 0; stage(true) });
     addEventListener('resize', () => { clearTimeout(products._t); products._t = setTimeout(fitTitle, 150) });
-    const more = $('#more');
-    if (more) {
-      if (rest.length) more.innerHTML = `<div class="more-c head"><span class="kick">${rest.length}${T(' ბრენდი')}</span><h3>${T('ასევე<br>პორტფელში')}</h3><p>${T('იმპორტირებული და ჩამოსასხმელი ბრენდები, რომლებსაც ზედაზენი აწარმოებს ან წარმოადგენს.')}</p></div>` + rest.map(p => `<div class="more-c" id="${p.id}"><div class="more-lg">${p.logo ? `<img src="${p.logo}" alt="${esc(p.n)}" loading="lazy">` : `<span class="wm">${esc(p.n)}</span>`}</div><span class="kick">${esc(p.k || '')}</span><b>${esc([p.style, p.abv].filter(Boolean).join(' · '))}</b><p>${esc(p.s || '')}</p></div>`).join('');
-      else more.remove();
-    }
     const h = decodeURIComponent(location.hash.slice(1)); const k = items.findIndex(p => p.id === h); if (k >= 0) cur = k;
-    const jump = rest.find(p => p.id === h);
     if (Q.get('p')) { const kk = items.findIndex(p => p.id === Q.get('p')); if (kk >= 0) cur = kk; }
     catalog(); stage(false);
-    if (jump) setTimeout(() => { const t = document.getElementById(jump.id); if (t) { history.replaceState(null, '', '#' + jump.id); t.classList.add('hl'); window.scrollTo({ top: t.getBoundingClientRect().top + scrollY - 140, behavior: 'instant' }); } }, 120);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
   }
 

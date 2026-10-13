@@ -1516,7 +1516,7 @@ html,body{overflow-x:clip;max-width:100%}
 
 /* iOS WebKit clips drop-shadow to the image box, which shows as a rectangle behind every bottle: no filter shadows there */
 @supports (-webkit-touch-callout:none){
-  .s-bottle img,.cat .btls img,.mcard img,.st-b img,.pc-img img,.ms img,.nimg .btl,.fz img,.flv .pill img,.gb img:not(.refl),.nj-bt img,.cap-b img,.cap-b img.lg,.cap-wheel,.glow-b img{filter:none!important}
+  .s-bottle img,.cat .btls img,.mcard img,.st-b img:not(.lg),.pc-img img:not(.lg),.ms img,.nimg .btl,.fz img,.flv .pill img,.gb img:not(.refl),.nj-bt img,.cap-b img,.cap-b img.lg,.cap-wheel,.glow-b img{filter:none!important}
   .gb img:not(.refl){animation:none!important}
 }
 
@@ -1543,3 +1543,12 @@ html,body{overflow-x:clip;max-width:100%}
   .nj-bt::before{content:"";position:absolute;inset:-10% -45%;z-index:-1;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 30%,transparent),transparent 72%);pointer-events:none}
 }
 @media(max-width:700px){.st-title{font-size:clamp(44px,13.5vw,58px)}}
+
+/* brands without a bottle photo: the logo (or the name) stands in the stage and in the catalog card */
+.st-b img.lg{width:min(74%,360px);max-height:42%;filter:brightness(0) invert(1);opacity:.94}
+.pc-img img.lg{width:74%;max-height:54%;filter:brightness(0) invert(1);opacity:.9}
+.st-b .wm,.pc-img .wm{font-family:var(--disp);line-height:.9;text-align:center;color:var(--t)}
+.st-b .wm{font-size:clamp(64px,9vw,150px)}
+.pc-img .wm{font-size:clamp(30px,3vw,46px)}
+@media(min-width:801px){.nums.n3{grid-template-columns:repeat(3,1fr)}}
+.st-b .wm{color:transparent;-webkit-text-stroke:1px rgba(227,192,141,.6)}
