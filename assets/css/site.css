@@ -1589,3 +1589,9 @@ html,body{overflow-x:clip;max-width:100%}
 .s-bottle .b3t>img,.cap-b .b3t>img{height:100%;width:auto;max-width:none;max-height:none;display:block;filter:none;object-fit:fill}
 .cap-b .b3{height:100%}
 .cap-b .b3::after{display:none}
+
+/* news: the floating bottles get the same volume (no floor shadow, they hang in the glow) */
+.nj-bt .b3{height:100%}
+.nj-bt .b3::after{display:none}
+.nj-bt .b3t>img{max-width:none;object-fit:fill}
+.nj-bt .b3t i{animation:none;-webkit-mask-position:0 0;mask-position:0 0}
