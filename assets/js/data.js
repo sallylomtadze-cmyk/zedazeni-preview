@@ -1,6 +1,6 @@
 /* ზედაზენი — პროდუქტების მონაცემები. წყარო: zedazeni.ge (2026-10). */
 const ROOT = window.ROOT || '', T = window.TR || (s => s);   // set on translated pages (en/, ru/)
-const P = n => ROOT + 'assets/img/p/' + n + '.png?v=7';
+const P = n => ROOT + 'assets/img/p/' + n + '.png?v=8';
 // flavour art: illustrated fruit sprites in assets/img/f (cut from generated sheets)
 const ICMAP = { saperavi: 'grapes', feijoa: 'feijoa-half', 'g-feijoa': 'feijoa-half', 'g-peach': 'peach', 'd-peach': 'peach', 'g-raspberry': 'raspberry', 'd-raspberry': 'raspberry', 'g-mint': 'mint',
   'd-aloe': 'leaf', 'd-tropical': 'pineapple', 'w-apple': 'apple', 'j-apple': 'apple', 'w-grapefruit': 'grapefruit-half', 'w-strawberry': 'strawberry', 'j-cherry': 'cherries', 'j-pomegranate': 'pomegranate', 'j-multi': 'mango' };
@@ -77,19 +77,19 @@ const BEERS = [
     s: 'ირლანდიური ლაგერი, 1960 წლიდან.',
     d: 'ლუდი HARP პირველად 1960 წელს ირლანდიაში Guinness-მა ჩამოასხა. საქართველოს ბაზარზე 2019 წელს გამოჩნდა და ზედაზენის ქარხანაში Diageo-ს ლიცენზიით იწარმოება.',
     ing: 'წყალი, ქერის ალაო, სვია' },
-  { id: 'holsten', n: 'Holsten', k: 'Carlsberg-ის ლიცენზია', cat: 'lic', style: 'გერმანული პილსნერი', img: '', logo: LG('holsten'), c: '#2E7D4F',
+  { id: 'holsten', n: 'Holsten', k: 'Carlsberg-ის ლიცენზია', cat: 'lic', style: 'გერმანული პილსნერი', img: P('holsten'), logo: LG('holsten'), c: '#2E7D4F',
     s: 'ლიცენზირებული ბრენდი, 2018 წლიდან.',
     d: 'Carlsberg-ის ჯგუფის ლუდის ბრენდი HOLSTEN საქართველოში 2018 წლიდან ზედაზენის ქარხანაში ლიცენზიით იწარმოება.' },
   { id: 'heineken', n: 'Heineken', k: 'ექსკლუზიური წარმომადგენელი', cat: 'import', style: 'პრემიუმ ლაგერი', abv: '5.0%', img: P('heineken'), logo: LG('heineken'), c: '#1F8A3B', isNew: true, sizes: ['0.5 ლ'],
     s: '2025 წლის 1 ივლისიდან ზედაზენის პორტფელში.',
     d: '2025 წლის 1 ივლისიდან ზედაზენი Heineken-ის ექსკლუზიური წარმომადგენელი და დისტრიბუტორია საქართველოში. პარტნიორობა Tempo Beverages-ის მიერ კომპანიის 60%-იანი წილის შეძენას მოჰყვა.' },
-  { id: 'krombacher', n: 'Krombacher', k: 'ოფიციალური იმპორტიორი', cat: 'import', style: 'გერმანული პილსი', abv: '4.8%', img: '', logo: LG('krombacher'), c: '#B4962F',
+  { id: 'krombacher', n: 'Krombacher', k: 'ოფიციალური იმპორტიორი', cat: 'import', style: 'გერმანული პილსი', abv: '4.8%', img: P('krombacher'), logo: LG('krombacher'), c: '#B4962F',
     s: 'გერმანული პრემიუმ პილსი.',
     d: 'ზედაზენი Krombacher-ის ოფიციალური წარმომადგენელი და იმპორტიორია საქართველოში.' },
-  { id: 'guinness', n: 'Guinness', k: 'ოფიციალური იმპორტიორი', cat: 'import', style: 'ირლანდიური სტაუტი', abv: '4.2%', img: '', logo: LG('guinness'), c: '#C9A24B',
+  { id: 'guinness', n: 'Guinness', k: 'ოფიციალური იმპორტიორი', cat: 'import', style: 'ირლანდიური სტაუტი', abv: '4.2%', img: P('guinness'), logo: LG('guinness'), c: '#C9A24B',
     s: 'დუბლინის ლეგენდარული სტაუტი.',
     d: 'ზედაზენი Guinness-ის ოფიციალური წარმომადგენელი და იმპორტიორია საქართველოში.' },
-  { id: 'bluemoon', n: 'Blue Moon', k: 'ოფიციალური იმპორტიორი', cat: 'import', style: 'ბელგიური ტიპის ხორბლის ლუდი', abv: '5.4%', img: '', logo: LG('bluemoon'), c: '#3D6FB6',
+  { id: 'bluemoon', n: 'Blue Moon', k: 'ოფიციალური იმპორტიორი', cat: 'import', style: 'ბელგიური ტიპის ხორბლის ლუდი', abv: '5.4%', img: P('bluemoon'), logo: LG('bluemoon'), c: '#3D6FB6',
     s: 'ბელგიური სტილის ხორბლის ლუდი.',
     d: 'ზედაზენი Blue Moon-ის ოფიციალური წარმომადგენელი და იმპორტიორია საქართველოში.' },
   { id: '12-grains', n: '12 მარცვალი', k: 'IPA', cat: 'own', style: 'IPA', abv: '5.5%', img: '', c: '#D08A2E', isNew: true,
