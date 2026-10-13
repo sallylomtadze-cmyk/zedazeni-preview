@@ -186,11 +186,13 @@
       $$('.flv .pill', el.r).forEach(b => b.addEventListener('click', () => { vi = +b.dataset.v; stage(true) }));
       el.cnt.innerHTML = `<b>${String(cur + 1).padStart(2, '0')}</b> / ${String(items.length).padStart(2, '0')}`;
       el.b.innerHTML = visual(p, v);
-      // the bottle arrives the way the fruit does: only once the picture is decoded, rising and settling with a soft overshoot
+      // the bottle arrives with the fruit: neighbours are preloaded so it never lags, and a slow decode cannot hold it back
+      const warm = u => { if (u && !warm.s.has(u)) { warm.s.add(u); new Image().src = u } }; warm.s = warm.s || (stage._w = stage._w || new Set());
+      [items[(cur + 1) % items.length], items[(cur - 1 + items.length) % items.length], p].forEach(q => isBeer ? warm(q.img) : q.v.forEach(x => warm(x.img)));
       const pic = el.b.firstElementChild;
-      if (anim && pic) { gsap.set(pic, { opacity: 0 });
-        const go = () => gsap.fromTo(pic, { yPercent: 7, scale: .88, opacity: 0, rotate: animate ? -3 : 0 }, { yPercent: 0, scale: 1, opacity: 1, rotate: 0, duration: 1.25, ease: 'back.out(1.3)', transformOrigin: '50% 100%', delay: animate ? .05 : .35, overwrite: true });
-        pic.decode ? pic.decode().then(go, go) : go(); }
+      if (anim && pic) { gsap.set(pic, { opacity: 0 }); let done = false;
+        const go = () => { if (done) return; done = true; gsap.fromTo(pic, { yPercent: 5, scale: .93, opacity: 0 }, { yPercent: 0, scale: 1, opacity: 1, duration: .95, ease: 'power3.out', transformOrigin: '50% 100%', delay: animate ? .08 : .25, overwrite: true }) };
+        if (pic.decode) pic.decode().then(go, go); else go(); setTimeout(go, 300); }
       $$('.pc', grid).forEach(c => c.classList.toggle('on', c.dataset.id === p.id));
       if (history.replaceState) history.replaceState(null, '', '#' + p.id);
       if (anim && animate) {
