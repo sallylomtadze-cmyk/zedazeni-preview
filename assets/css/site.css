@@ -1583,3 +1583,9 @@ html,body{overflow-x:clip;max-width:100%}
 .pc-img .b3{transition:transform .7s var(--e)}
 .pc:hover .pc-img .b3{transform:translateY(-6px) scale(1.04)}
 .pc:hover .pc-img .b3 img{transform:none}
+
+/* story page: the slider bottle and the dial bottle get the same volume */
+.s-bottle .b3{height:100%}
+.s-bottle .b3t>img,.cap-b .b3t>img{height:100%;width:auto;max-width:none;max-height:none;display:block;filter:none;object-fit:fill}
+.cap-b .b3{height:100%}
+.cap-b .b3::after{display:none}

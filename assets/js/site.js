@@ -5,6 +5,9 @@
   const $ = (s, c) => (c || document).querySelector(s);
   const $$ = (s, c) => [...(c || document).querySelectorAll(s)];
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  // a bottle with volume: the photo plus shading, a specular line and two rim lights, all masked to its own silhouette
+  const M = u => `-webkit-mask-image:url(${u});mask-image:url(${u})`, M2 = u => `-webkit-mask-image:url(${u}),url(${u});mask-image:url(${u}),url(${u})`;
+  const vol = (u, alt, small) => `<span class="b3${small ? ' sm' : ''}">${small ? '' : `<img class="refl" src="${u}" alt="">`}<span class="b3t"><img src="${u}" alt="${esc(alt)}"><b style="${M(u)}"></b><i style="${M(u)}"></i><u style="${M2(u)}"></u><s style="${M2(u)}"></s></span></span>`;
   const store = { get(k) { try { return localStorage.getItem(k) } catch (e) { return null } }, set(k, v) { try { localStorage.setItem(k, v) } catch (e) { } } };
   const Q = new URLSearchParams(location.search);
   const SHOT = Q.has('shot');
@@ -89,7 +92,7 @@
         gsap.set(next, { opacity: 1 });
         const tl = gsap.timeline({ onComplete() { busy = false } });
         tl.fromTo($$('.s-title span', next), { yPercent: 105, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.1, ease: E, stagger: .09 }, 0)
-          .fromTo($('.s-bottle img', next), { yPercent: 12, opacity: 0, rotate: -6 }, { yPercent: 0, opacity: 1, rotate: 0, duration: 1.3, ease: E, transformOrigin: '50% 100%' }, .05)
+          .fromTo($('.s-bottle > *', next), { yPercent: 12, opacity: 0, rotate: -6 }, { yPercent: 0, opacity: 1, rotate: 0, duration: 1.3, ease: E, transformOrigin: '50% 100%' }, .05)
           .fromTo([$('.tagl', next), $('.s-right', next), $('.s-left .btn', next)], { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: .9, ease: E, stagger: .08 }, .25)
           .fromTo($('.s-num', next), { opacity: 0 }, { opacity: 1, duration: 1 }, .2);
       };
@@ -116,9 +119,6 @@
     const grid = $('#grid'), fl = $('#filters'), count = $('#count');
     const catName = k => (cats.find(c => c[0] === k) || [])[1] || '';
     const first = p => isBeer ? p : p.v[0];
-    // a bottle with volume: the photo plus shading, a specular line and two rim lights, all masked to its own silhouette
-    const M = u => `-webkit-mask-image:url(${u});mask-image:url(${u})`, M2 = u => `-webkit-mask-image:url(${u}),url(${u});mask-image:url(${u}),url(${u})`;
-    const vol = (u, alt, small) => `<span class="b3${small ? ' sm' : ''}">${small ? '' : `<img class="refl" src="${u}" alt="">`}<span class="b3t"><img src="${u}" alt="${esc(alt)}"><b style="${M(u)}"></b><i style="${M(u)}"></i><u style="${M2(u)}"></u><s style="${M2(u)}"></s></span></span>`;
     const visual = (p, v) => {
       const img = isBeer ? p.img : v.img;
       return img ? vol(img, p.n, true) : p.logo ? `<img class="lg" src="${p.logo}" alt="${esc(p.n)}">` : `<span class="wm">${esc(p.n)}</span>`;
@@ -246,7 +246,7 @@
       if (k === cur) return; cur = k; const it = items[k], rot = -k * 360 / n;
       labels.forEach((t, i) => t.classList.toggle('on', i === k)); ticks.forEach((t, i) => t.classList.toggle('on', i <= k));
       cnt.textContent = String(k + 1).padStart(2, '0'); hEl.textContent = it.h; pEl.textContent = it.p; el.classList.toggle('hot', it.y >= 2025);
-      bt.innerHTML = it.img ? `<img src="${it.img}" alt="">` : `<img class="lg" src="${(window.ROOT || '')}assets/img/logo-light.svg" alt="">`;
+      bt.innerHTML = it.img ? vol(it.img, '', true) : `<img class="lg" src="${(window.ROOT || '')}assets/img/logo-light.svg" alt="">`;
       if (anim && !instant) {
         gsap.to(wheel, { rotation: rot, duration: 1.1, ease: E, transformOrigin: '50% 50%', overwrite: true });
         const o = { v: +yEl.textContent }; gsap.to(o, { v: it.y, duration: .6, ease: 'power2.out', snap: { v: 1 }, onUpdate: () => { yEl.textContent = o.v } });
