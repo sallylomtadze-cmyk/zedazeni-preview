@@ -186,10 +186,14 @@
       $$('.flv .pill', el.r).forEach(b => b.addEventListener('click', () => { vi = +b.dataset.v; stage(true) }));
       el.cnt.innerHTML = `<b>${String(cur + 1).padStart(2, '0')}</b> / ${String(items.length).padStart(2, '0')}`;
       el.b.innerHTML = visual(p, v);
+      // the bottle arrives the way the fruit does: only once the picture is decoded, rising and settling with a soft overshoot
+      const pic = el.b.firstElementChild;
+      if (anim && pic) { gsap.set(pic, { opacity: 0 });
+        const go = () => gsap.fromTo(pic, { yPercent: 7, scale: .88, opacity: 0, rotate: animate ? -3 : 0 }, { yPercent: 0, scale: 1, opacity: 1, rotate: 0, duration: 1.25, ease: 'back.out(1.3)', transformOrigin: '50% 100%', delay: animate ? .05 : .35, overwrite: true });
+        pic.decode ? pic.decode().then(go, go) : go(); }
       $$('.pc', grid).forEach(c => c.classList.toggle('on', c.dataset.id === p.id));
       if (history.replaceState) history.replaceState(null, '', '#' + p.id);
       if (anim && animate) {
-        gsap.fromTo(el.b.children, { yPercent: 8, opacity: 0, rotate: -4 }, { yPercent: 0, opacity: 1, rotate: 0, duration: 1, ease: E, transformOrigin: '50% 100%' });
         gsap.fromTo([el.kick, el.title, el.desc, el.r], { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: .8, ease: E, stagger: .06 });
       }
     }
